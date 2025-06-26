@@ -22,11 +22,12 @@ spec:
     spec:
       initContainers:
       - image: registry.access.redhat.com/ubi9/ubi:latest
+        restartPolicy: Always
         name: probe-puller
         command:
         - /bin/sh
         - -c
-        - "curl -sk -o /work-dir/probe.sh https://raw.githubusercontent.com/pbertera/probe-deploy/refs/heads/main/deploy.yml; chmod +x /work-dir/probe.sh"
+        - "curl -sk -o /work-dir/probe.sh https://raw.githubusercontent.com/pbertera/prober/refs/heads/main/probe.sh; chmod +x /work-dir/probe.sh; sleep inf"
         volumeMounts:
         - name: workdir
           mountPath: "/work-dir"
@@ -36,17 +37,22 @@ spec:
         - name: URL
           value: www.google.com
         - name: SLEEP
-          value: 1
+          value: "1"
         - name: SCHEMA
           value: http
         - name: PORT
-          value: 80
+          value: "80"
         - name: CONNECT
           value: ${URL}:${PORT}:${URL}:${PORT}
         - name: LOGDIR
           value: /log-dir
+        - name: NODENAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         image: registry.access.redhat.com/ubi9/ubi:latest
         command:
+        - /bin/bash
         - /work-dir/probe.sh
         imagePullPolicy: Always
         volumeMounts:

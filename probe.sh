@@ -6,7 +6,8 @@ PORT=${PORT-80}
 SCHEMA=${SCHEMA-http}
 CONNECT=${URL}:${PORT}:${URL}:${PORT}
 LOGDIR="${LOGDIR-.}"
-LOGFILE="${LOGDIR}/${HOSTNAME}_probe_--connect-to_${CONNECT}_${SCHEMA}:${URL}.log"
+NODENAME=${NODENAME-}
+LOGFILE="${LOGDIR}/${NODENAME}_${HOSTNAME}_probe_--connect-to_${CONNECT}_${SCHEMA}:${URL}.log"
 
 echo '"Date","HTTP Code","Remote IP","Time Total(s)","Size Total(bytes)","DNS Lookup(s)","TCP Connect time(s)","TLS Connect time(s)","Redirect(s)","Pre Transfer(s)","Start Transfer(s)"' | tee -a "$LOGFILE"
 
