@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: curl-probe
+  name: curl-probe
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: curl-probe
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: curl-probe
+    spec:
+      initContainers:
+      - image: registry.access.redhat.com/ubi9/ubi:latest
+        name: probe-puller
+        command:
+        - /bin/sh
+        - -c
+        - "curl -sk -o /work-dir/probe.sh https://raw.githubusercontent.com/pbertera/probe-deploy/refs/heads/main/deploy.yml; chmod +x /work-dir/probe.sh"
+        volumeMounts:
+        - name: workdir
+          mountPath: "/work-dir"
+      containers:
+      - name: probe-prober
+        env:
+        - name: URL
+          value: www.google.com
+        - name: SLEEP
+          value: 1
+        - name: SCHEMA
+          value: http
+        - name: PORT
+          value: 80
+        - name: CONNECT
+          value: ${URL}:${PORT}:${URL}:${PORT}
+        - name: LOGDIR
+          value: /log-dir
+        image: registry.access.redhat.com/ubi9/ubi:latest
+        command:
+        - /work-dir/probe.sh
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: logdir
+          mountPath: "/log-dir"
+        - name: workdir
+          mountPath: "/work-dir"
+      restartPolicy: Always
+      volumes:
+      - name: workdir
+        emptyDir: {}
+      - name: logdir
+        persistentVolumeClaim:
+          claimName: probe
