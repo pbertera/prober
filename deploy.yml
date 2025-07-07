@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: curl-probe
-  name: curl-probe
+    app: curl-probe-${SUFFIX}
+  name: curl-probe-${SUFFIX}
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: curl-probe
+      app: curl-probe-${SUFFIX}
   strategy:
     rollingUpdate:
       maxUnavailable: 0%
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app: curl-probe
+        app: curl-probe-${SUFFIX}
     spec:
       initContainers:
       - image: registry.access.redhat.com/ubi9/ubi:latest
