@@ -16,7 +16,8 @@ echo '"Date","HTTP Code","Redirect URL","Remote IP","Time Total(s)","Size Total(
 
 probe(){
   while true; do
-    echo -ne "${MESSAGEB64}" | base64 -d | curl -w "\"$(date -u)\",\"%{http_code}\",\"%{redirect_url}\",\"%{remote_ip}\",\"%{time_total}\",\"%{size_download}\",\"%{time_namelookup}\",\"%{time_connect}\",\"%{time_appconnect}\",\"%{time_redirect}\",\"%{time_pretransfer}\",\"%{time_starttransfer}\"\n" -o /dev/null -s $@
+    echo -ne "${MESSAGEB64}" | base64 -d | curl -s $@
+    #echo -ne "${MESSAGEB64}" | base64 -d | curl -w "\"$(date -u)\",\"%{http_code}\",\"%{redirect_url}\",\"%{remote_ip}\",\"%{time_total}\",\"%{size_download}\",\"%{time_namelookup}\",\"%{time_connect}\",\"%{time_appconnect}\",\"%{time_redirect}\",\"%{time_pretransfer}\",\"%{time_starttransfer}\"\n" -o /dev/null -s $@
   sleep $SLEEP
   done
 }
