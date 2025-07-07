@@ -27,23 +27,19 @@ spec:
         command:
         - /bin/sh
         - -c
-        - "curl -sk -o /work-dir/probe.sh https://raw.githubusercontent.com/pbertera/prober/refs/heads/main/probe.sh; chmod +x /work-dir/probe.sh; sleep inf"
+        - "curl -sk -o /work-dir/probe.sh https://raw.githubusercontent.com/pbertera/prober/refs/heads/main/probe-amadeus.sh; chmod +x /work-dir/probe.sh; sleep inf"
         volumeMounts:
         - name: workdir
           mountPath: "/work-dir"
       containers:
       - name: probe-prober
         env:
-        - name: URL
+        - name: HOST
           value: www.google.com
         - name: SLEEP
           value: "1"
-        - name: SCHEMA
-          value: http
         - name: PORT
           value: "80"
-        - name: CONNECT
-          value: ${URL}:${PORT}:${URL}:${PORT}
         - name: LOGDIR
           value: /log-dir
         - name: NODENAME
