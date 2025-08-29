@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -x
 
 SLEEP=${SLEEP-1}
 HOST=${HOST-www.google.com}
